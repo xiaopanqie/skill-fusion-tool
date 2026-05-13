@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>技能融合器</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-decoration">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <main class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="title">🧬 技能融合器</h1>
+      <p class="subtitle">输入你的技能，让 AI 为你创造全新的职业与项目</p>
+    </header>
+
+    <!-- Input card -->
+    <section class="glass-card input-card">
+      <div class="card-header">
+        <h2>输入技能</h2>
+        <span class="badge" id="skillCount">0</span>
+      </div>
+
+      <div class="tags-area" id="tagsContainer">
+        <!-- Tags appear here -->
+      </div>
+
+      <div class="input-row">
+        <input
+          type="text"
+          id="skillInput"
+          class="skill-input"
+          placeholder="输入技能名称，按 Enter 添加（如：摄影、编程、心理学）"
+          autocomplete="off"
+        />
+        <button class="btn-icon" id="clearAllBtn" title="清空全部">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+        </button>
+      </div>
+
+      <button class="btn-fuse" id="fuseBtn" disabled>
+        <span class="btn-text">开始融合</span>
+        <span class="btn-spinner hidden" id="spinner"></span>
+      </button>
+    </section>
+
+    <!-- Result card -->
+    <section class="glass-card result-card hidden" id="resultCard">
+      <div class="card-header result-header">
+        <div class="result-icon" id="resultIcon">✨</div>
+        <div class="result-title-group">
+          <h2 class="result-name" id="resultName"></h2>
+          <p class="result-tagline" id="resultTagline"></p>
+        </div>
+      </div>
+
+      <p class="result-desc" id="resultDesc"></p>
+
+      <div class="features-section">
+        <h3>核心特点</h3>
+        <ul class="features-list" id="featuresList"></ul>
+      </div>
+
+      <!-- Existing skill hint -->
+      <div class="existing-hint hidden" id="existingHint">
+        <div class="hint-icon">💡</div>
+        <div class="hint-content">
+          <p class="hint-title">这个方向在现实中已存在！</p>
+          <p class="hint-desc" id="hintDesc"></p>
+          <a class="hint-link" id="hintLink" href="#" target="_blank" rel="noopener">
+            点击了解应用场景 →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Empty state -->
+    <section class="empty-state" id="emptyState">
+      <div class="empty-icon">🔮</div>
+      <p>输入 2 个以上技能<br>看看 AI 能为你融合出什么</p>
+    </section>
+
+    <!-- Error state -->
+    <div class="toast hidden" id="toast"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Powered by Claude API · 跨学科创新引擎</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
