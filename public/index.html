@@ -18,6 +18,17 @@
     <header class="header">
       <h1 class="title">🧬 技能融合器</h1>
       <p class="subtitle">输入你的技能，让 AI 为你创造全新的职业与项目</p>
+      <button class="api-key-toggle" id="apiKeyToggle">⚙️ 设置 API Key</button>
+      <div class="api-key-section hidden" id="apiKeySection">
+        <input
+          type="password"
+          id="apiKeyInput"
+          class="api-key-input"
+          placeholder="粘贴你的 Anthropic API Key（以 sk-ant 开头）"
+          autocomplete="off"
+        />
+        <p class="api-key-hint">Key 仅保存在你的浏览器中，不会被上传到任何服务器</p>
+      </div>
     </header>
 
     <!-- Input card -->

@@ -63,7 +63,24 @@ body {
   background-clip: text;
   margin-bottom: 8px;
 }
-.subtitle { color: #8888aa; font-size: 0.95rem; }
+.subtitle { color: #8888aa; font-size: 0.95rem; margin-bottom: 10px; }
+.api-key-toggle {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: #8888aa; font-size: 0.82rem; padding: 6px 14px; border-radius: 20px;
+  cursor: pointer; transition: all 0.2s;
+}
+.api-key-toggle:hover { background: rgba(255,255,255,0.12); color: #c0c0e0; }
+.api-key-section {
+  margin-top: 10px; animation: slideUp 0.3s ease-out;
+}
+.api-key-input {
+  width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; padding: 10px 14px; color: #e0e0f0; font-size: 0.85rem;
+  outline: none; font-family: monospace;
+}
+.api-key-input:focus { border-color: rgba(120,100,255,0.5); }
+.api-key-input::placeholder { color: #5555aa; font-family: inherit; }
+.api-key-hint { color: #5555aa; font-size: 0.72rem; margin-top: 6px; }
 
 /* ─── Glass card ────────────────────────────────────── */
 .glass-card {
