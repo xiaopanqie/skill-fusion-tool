@@ -20,6 +20,7 @@ export default async function handler(req) {
         model: 'claude-sonnet-4-6',
         max_tokens: 800,
         temperature: 0.9,
+        thinking: { type: 'disabled' },
         system: '你是一个擅长跨学科创新的创意顾问。输出严格遵循JSON格式，不要包含其他文字。',
         messages: [{
           role: 'user',
