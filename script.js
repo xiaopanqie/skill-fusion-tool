@@ -182,49 +182,23 @@ function matchExistingSkill(fusedName, inputSkills) {
   return (bestMatch && bestScore >= Math.max(2, inputSkills.length * 0.4)) ? bestMatch : null;
 }
 
-// ─── Call Anthropic API directly ───────────────────────
+// ─── Call API via Netlify function ──────────────────────
 async function fuseSkills() {
   if (state.isLoading || state.skills.length < 2) return;
-
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    showToast('请先展开顶部「设置 API Key」并填入密钥');
-    dom.apiKeySection.classList.remove('hidden');
-    dom.apiKeyInput.focus();
-    return;
-  }
 
   setLoading(true);
   dom.resultCard.classList.add('hidden');
 
   try {
-    const skillList = state.skills.join('、');
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('/.netlify/functions/fuse', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 800,
-        temperature: 0.9,
-        system: '你是一个擅长跨学科创新的创意顾问。输出严格遵循JSON格式，不要包含其他文字。',
-        messages: [{
-          role: 'user',
-          content: `技能：${skillList}。创造性地融合这些技能，生成一个全新的职业或项目。返回JSON：{"name":"职业名(3-8字)","description":"描述(80-150字)","features":["特点1","特点2","特点3","特点4","特点5"],"tagline":"slogan(15字内)"}`,
-        }],
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ skills: state.skills }),
     });
+    if (!resp.ok) throw new Error(`服务器错误 ${resp.status}`);
 
-    if (!resp.ok) {
-      const err = await resp.json();
-      throw new Error(err.error?.message || `HTTP ${resp.status}`);
-    }
-
-    const data = await resp.json();
-    const textBlock = data.content?.find(b => b.type === 'text');
+    const textContent = await resp.json();
+    const textBlock = textContent.content?.find(b => b.type === 'text');
     if (!textBlock) throw new Error('AI 未返回有效内容');
 
     const jsonMatch = textBlock.text.match(/\{[\s\S]*\}/);
