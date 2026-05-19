@@ -196,12 +196,23 @@ async function fuseSkills() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ skills: state.skills, apiKey }),
     });
-    const textContent = await resp.json();
-    if (!resp.ok) throw new Error(textContent.error || `服务器错误 ${resp.status}`);
-    const textBlock = textContent.content?.find(b => b.type === 'text');
-    if (!textBlock) throw new Error('AI 未返回有效内容');
+    const raw = await resp.json();
+    if (!resp.ok) throw new Error(raw.error || `服务器错误 ${resp.status}`);
 
-    const jsonMatch = textBlock.text.match(/\{[\s\S]*\}/);
+    // Compatible with both Anthropic and DeepSeek response formats
+    let rawText = '';
+    if (raw.content) {
+      // Anthropic format
+      const tb = raw.content.find(b => b.type === 'text');
+      if (tb) rawText = tb.text;
+    } else if (raw.choices) {
+      // DeepSeek/OpenAI format
+      rawText = raw.choices[0]?.message?.content || '';
+    }
+
+    if (!rawText) throw new Error('AI 未返回有效内容');
+
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error('AI 返回格式异常');
 
     const result = JSON.parse(jsonMatch[0]);
