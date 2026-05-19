@@ -9,11 +9,18 @@ export default async function handler(req) {
     const { skills } = await req.json();
     const skillList = skills.join('、');
 
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey || apiKey.length < 20) {
+      return new Response(JSON.stringify({
+        error: `API Key 未配置。当前环境变量名: ANTHROPIC_API_KEY, 长度: ${apiKey ? apiKey.length : 0}`,
+      }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    }
+
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
@@ -30,6 +37,12 @@ export default async function handler(req) {
     });
 
     const data = await resp.json();
+    if (!resp.ok) {
+      return new Response(JSON.stringify({
+        error: `Anthropic API 错误: ${data.error?.type} - ${data.error?.message}`,
+        keyPrefix: apiKey.slice(0, 10) + '...',
+      }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    }
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
