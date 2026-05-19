@@ -6,16 +6,15 @@ export default async function handler(req) {
   }
 
   try {
-    const { skills } = await req.json();
-    const skillList = skills.join('、');
+    const { skills, apiKey } = await req.json();
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey || apiKey.length < 20) {
+    if (!apiKey || !apiKey.startsWith('sk-ant')) {
       return new Response(JSON.stringify({
-        error: `API Key 未配置。当前环境变量名: ANTHROPIC_API_KEY, 长度: ${apiKey ? apiKey.length : 0}`,
-      }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+        error: '请先在页面顶部设置有效的 Anthropic API Key（以 sk-ant 开头）',
+      }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
+    const skillList = skills.join('、');
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -39,10 +38,10 @@ export default async function handler(req) {
     const data = await resp.json();
     if (!resp.ok) {
       return new Response(JSON.stringify({
-        error: `Anthropic API 错误: ${data.error?.type} - ${data.error?.message}`,
-        keyPrefix: apiKey.slice(0, 10) + '...',
+        error: `API 错误: ${data.error?.message || data.error?.type}`,
       }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
+
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

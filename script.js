@@ -190,10 +190,11 @@ async function fuseSkills() {
   dom.resultCard.classList.add('hidden');
 
   try {
+    const apiKey = getApiKey();
     const resp = await fetch('/.netlify/functions/fuse', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ skills: state.skills }),
+      body: JSON.stringify({ skills: state.skills, apiKey }),
     });
     if (!resp.ok) throw new Error(`服务器错误 ${resp.status}`);
 
