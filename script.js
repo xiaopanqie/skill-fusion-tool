@@ -196,9 +196,8 @@ async function fuseSkills() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ skills: state.skills, apiKey }),
     });
-    if (!resp.ok) throw new Error(`服务器错误 ${resp.status}`);
-
     const textContent = await resp.json();
+    if (!resp.ok) throw new Error(textContent.error || `服务器错误 ${resp.status}`);
     const textBlock = textContent.content?.find(b => b.type === 'text');
     if (!textBlock) throw new Error('AI 未返回有效内容');
 
